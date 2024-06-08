@@ -1,9 +1,15 @@
 // navbar is used in root layout and is not reusable component so it is kept next to root layout in app dir
+//client side rendering as we are using browser API i.e usePathname()
+"use client";
 import Link from "next/link";
 import { PiBug } from "react-icons/pi";
 import React from "react";
+import { usePathname } from "next/navigation";
+import classNames from "classnames";
 
 const NavBar = () => {
+  const currentPathname = usePathname();
+
   const navLinks = [
     { name: "Dashboard", label: "Dashboard", slug: "/" },
     { name: "Issues", label: "Issues", slug: "/issues" },
@@ -17,7 +23,10 @@ const NavBar = () => {
         {navLinks.map((link) => (
           <li key={link.label}>
             <Link
-              className="hover:text-green-500 transition-colors"
+              className={classNames({
+                "text-red-600": currentPathname === link.slug,
+                "hover:text-green-500 transition-colors": true,
+              })}
               href={link.slug}
             >
               {link.name}
