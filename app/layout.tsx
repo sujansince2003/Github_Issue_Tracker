@@ -1,12 +1,21 @@
-import type { Metadata } from "next";
 import "@radix-ui/themes/styles.css";
-import { Theme } from "@radix-ui/themes";
-import { Inter } from "next/font/google";
+import "./theme-config.css";
 import "./globals.css";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { Container, Theme, ThemePanel } from "@radix-ui/themes";
 import NavBar from "./NavBar";
+import LocalFont from "next/font/local";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
 
+const poppin = LocalFont({
+  src: "../public/fonts/poppins-regular-webfont.woff2",
+  variable: "--font-poppins",
+});
 export const metadata: Metadata = {
   title: "Github Issue  Tracker",
   description: "Track Github Issues",
@@ -19,10 +28,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Theme>
+      <body className={poppin.variable}>
+        <Theme radius="large">
           <NavBar />
+
           <main className="p-4">{children}</main>
+          {/* <ThemePanel /> to customize the theme */}
         </Theme>
       </body>
     </html>
