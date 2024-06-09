@@ -7,7 +7,7 @@ import prisma from "@/prisma/PrismaClient"
 
 const Issueschema = z.object({
     title: z.string().min(1),
-    descriptiom: z.string().min(1),
+    description: z.string().min(1),
     // we have many property in prisma schema but we are using title and description bcz other have default or auto generated 
 });
 
@@ -28,5 +28,7 @@ export async function POST(request: NextRequest) {
             }
         }
     )
+
+    return NextResponse.json(newIssue, { status: 200 })
 
 }
