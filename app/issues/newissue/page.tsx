@@ -1,15 +1,15 @@
 "use client";
-import { TextField, TextArea, Button, Callout, Text } from "@radix-ui/themes";
+import { TextField, Button, Callout } from "@radix-ui/themes";
 import React, { useState } from "react";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import { useForm, Controller } from "react-hook-form";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Issueschema } from "@/app/zodvalidationSchemas";
 import { z } from "zod";
 import { ErrorMessage, Spinnner } from "@/app/components";
+import axios from "axios";
 
 // interface IssueForm {
 //   title: string;
