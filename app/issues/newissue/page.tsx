@@ -9,8 +9,7 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Issueschema } from "@/app/zodvalidationSchemas";
 import { z } from "zod";
-import ErrorMessage from "@/app/components/ErrorMessage";
-import Spinnner from "@/app/components/Spinnner";
+import { ErrorMessage, Spinnner } from "@/app/components";
 
 // interface IssueForm {
 //   title: string;
