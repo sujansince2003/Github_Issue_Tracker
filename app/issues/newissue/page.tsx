@@ -1,7 +1,6 @@
 "use client";
 import { TextField, Button, Callout } from "@radix-ui/themes";
 import React, { useState } from "react";
-import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import { useForm, Controller } from "react-hook-form";
 import { useRouter } from "next/navigation";
@@ -10,6 +9,11 @@ import { Issueschema } from "@/app/zodvalidationSchemas";
 import { z } from "zod";
 import { ErrorMessage, Spinnner } from "@/app/components";
 import axios from "axios";
+import dynamic from "next/dynamic";
+
+const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
+  ssr: false,
+});
 
 // interface IssueForm {
 //   title: string;
@@ -17,7 +21,7 @@ import axios from "axios";
 // } we are using this ts interface but we have zod schema too so we can use that to get ts Type
 type IssueForm = z.infer<typeof Issueschema>;
 
-const AddnewIssue = async () => {
+const AddnewIssue = () => {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const {

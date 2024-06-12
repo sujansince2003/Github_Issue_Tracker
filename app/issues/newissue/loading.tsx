@@ -1,13 +1,12 @@
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+import { Loadingskeleton } from "@/app/components";
 
 const LoadingNewIssue = async () => {
   return (
     <div className="max-w-xl ">
       <form className="space-y-6">
-        <Skeleton />
-        <Skeleton height={"30rem"} />
-        <Skeleton width={"5rem"} />
+        <Loadingskeleton />
+        <Loadingskeleton height={"30rem"} />
+        <Loadingskeleton width={"5rem"} />
       </form>
     </div>
   );

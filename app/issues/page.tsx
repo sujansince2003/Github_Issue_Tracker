@@ -1,11 +1,29 @@
-import React from "react";
-import { Table } from "@radix-ui/themes";
 import prisma from "@/prisma/PrismaClient";
+import { Table } from "@radix-ui/themes";
 import { IssueStatusBadge, Link } from "../components";
 
 import IssuesActions from "./IssuesActions";
 
+interface Issue {
+  id: string;
+  title: string;
+  description: string;
+  status: "OPEN" | "CLOSED" | "IN_PROGRESS"; // Assuming 'OPEN' is a possible value for status
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 const Issue = async () => {
+  // const [issues, setIssues] = useState<Issue[]>([]);
+
+  // useEffect(() => {
+  //   const fetchIssues = async () => {
+  //     const fetchedIssues = await prisma.issue.findMany();
+  //     setIssues(fetchedIssues);
+  //   };
+
+  //   fetchIssues();
+  // }, []);
   const issues = await prisma.issue.findMany();
 
   return (
