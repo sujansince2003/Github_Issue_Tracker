@@ -17,7 +17,7 @@ import axios from "axios";
 // } we are using this ts interface but we have zod schema too so we can use that to get ts Type
 type IssueForm = z.infer<typeof Issueschema>;
 
-const AddnewIssue = () => {
+const AddnewIssue = async () => {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const {
@@ -30,6 +30,7 @@ const AddnewIssue = () => {
   });
 
   const router = useRouter();
+
   return (
     <div className="max-w-xl ">
       {error && (

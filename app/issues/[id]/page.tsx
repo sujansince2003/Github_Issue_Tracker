@@ -1,6 +1,6 @@
 import prisma from "@/prisma/PrismaClient";
 import React from "react";
-import delay from "delay";
+
 import { notFound } from "next/navigation";
 import { Heading, Text, Flex, Card } from "@radix-ui/themes";
 import { IssueStatusBadge } from "@/app/components";
@@ -9,7 +9,6 @@ interface Props {
   params: { id: string };
 }
 const page = async ({ params }: Props) => {
-  await delay(2000);
   const issueInfo = await prisma.issue.findUnique({
     where: {
       id: params.id,
