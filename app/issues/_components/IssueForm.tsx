@@ -1,5 +1,5 @@
 "use client";
-import { TextField, Button, Callout } from "@radix-ui/themes";
+import { TextField, Button, Callout, Text } from "@radix-ui/themes";
 import React, { useState } from "react";
 import "easymde/dist/easymde.min.css";
 import { useForm, Controller } from "react-hook-form";
@@ -52,7 +52,9 @@ const IssueForm = ({ issuedataToEdit }: Props) => {
         onSubmit={handleSubmit(async (data) => {
           try {
             setIsSubmitting(true);
-            await axios.post("/api/issues", data);
+            if (issuedataToEdit)
+              await axios.patch("/api/issues/" + issuedataToEdit.id, data);
+            else await axios.post("/api/issues", data);
             router.push("/issues");
           } catch (error) {
             setIsSubmitting(false);
@@ -80,7 +82,12 @@ const IssueForm = ({ issuedataToEdit }: Props) => {
         )}
 
         <Button disabled={isSubmitting}>
-          Submit New Issue
+          {issuedataToEdit ? (
+            <Text>Update Issue</Text>
+          ) : (
+            <Text> Submit New Issue</Text>
+          )}
+
           {isSubmitting && <Spinnner />}
         </Button>
       </form>
