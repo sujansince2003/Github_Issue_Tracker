@@ -9,12 +9,8 @@ import { Issueschema } from "@/app/zodvalidationSchemas";
 import { z } from "zod";
 import { ErrorMessage, Spinnner } from "@/app/components";
 import axios from "axios";
-import dynamic from "next/dynamic";
 import { Issue } from "@prisma/client";
-
-const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
-  ssr: false,
-});
+import SimpleMDE from "react-simplemde-editor";
 
 // interface IssueForm {
 //   title: string;
@@ -56,6 +52,7 @@ const IssueForm = ({ issuedataToEdit }: Props) => {
               await axios.patch("/api/issues/" + issuedataToEdit.id, data);
             else await axios.post("/api/issues", data);
             router.push("/issues");
+            router.refresh();
           } catch (error) {
             setIsSubmitting(false);
             setError("An unexpected error occured");
