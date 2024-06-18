@@ -49,7 +49,7 @@ const IssueForm = ({ issuedataToEdit }: Props) => {
           try {
             setIsSubmitting(true);
             if (issuedataToEdit)
-              await axios.patch("/api/issues/" + issuedataToEdit.id, data);
+              await axios.patch("/api/issues/edit/" + issuedataToEdit.id, data);
             else await axios.post("/api/issues", data);
             router.push("/issues");
             router.refresh();
