@@ -32,7 +32,9 @@ export default function RootLayout({
         <Theme radius="large">
           <NavBar />
 
-          <main className="p-4">{children}</main>
+          <main className="p-4">
+            <Container>{children}</Container>
+          </main>
           {/* <ThemePanel /> to customize the theme */}
         </Theme>
       </body>
