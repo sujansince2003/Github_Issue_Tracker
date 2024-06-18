@@ -2,6 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/PrismaClient"
 import { Issueschema } from "@/app/zodvalidationSchemas";
 
+
+export async function GET() {
+    const newIssue = await prisma.issue.findMany()
+
+    return NextResponse.json(newIssue, { status: 200 })
+}
 export async function POST(request: NextRequest) {
     const body = await request.json();
 
