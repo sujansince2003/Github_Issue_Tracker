@@ -6,10 +6,12 @@ import { PiBug } from "react-icons/pi";
 import React from "react";
 import { usePathname } from "next/navigation";
 import classNames from "classnames";
+import { useSession } from "next-auth/react";
+import { Box } from "@radix-ui/themes";
 
 const NavBar = () => {
   const currentPathname = usePathname();
-
+  const { status, data: session } = useSession();
   const navLinks = [
     { name: "Dashboard", label: "Dashboard", slug: "/" },
     { name: "Issues", label: "Issues", slug: "/issues" },
@@ -34,6 +36,14 @@ const NavBar = () => {
           </li>
         ))}
       </ul>
+      <Box>
+        {status === "authenticated" && (
+          <Link href={"/api/auth/signout"}>Log out</Link>
+        )}
+        {status === "unauthenticated" && (
+          <Link href={"/api/auth/signin"}>Sign In</Link>
+        )}
+      </Box>
     </nav>
   );
 };
