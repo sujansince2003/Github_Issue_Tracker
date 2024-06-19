@@ -1,9 +1,14 @@
+import authOptions from "@/app/auth/AuthOptions";
 import { Issueschema } from "@/app/zodvalidationSchemas";
 import prisma from "@/prisma/PrismaClient";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(request: NextRequest,
     { params }: { params: { id: string } }) {
+    const session = getServerSession(authOptions)
+    if (!session)
+        return NextResponse.json({ error: "need authorization" }, { status: 401 })
     const body = await request.json()
     const validation = Issueschema.safeParse(body)
     if (!validation.success)
@@ -37,6 +42,9 @@ export async function PATCH(request: NextRequest,
 
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+    const session = getServerSession(authOptions)
+    if (!session)
+        return NextResponse.json({ error: "need authorization" }, { status: 401 })
     const issue = await prisma.issue.findUnique(
         {
             where:
