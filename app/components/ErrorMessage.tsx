@@ -5,7 +5,6 @@ const ErrorMessage = ({ children }: PropsWithChildren) => {
   return (
     <Text color="red" as="p">
       {children}
-      {/* //children */}
     </Text>
   );
 };
