@@ -6,6 +6,7 @@ import { Inter } from "next/font/google";
 import { Container, Theme, ThemePanel } from "@radix-ui/themes";
 import NavBar from "./NavBar";
 import LocalFont from "next/font/local";
+import AuthProvider from "./auth/Provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,14 +30,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={poppin.variable}>
-        <Theme radius="large">
-          <NavBar />
+        <AuthProvider>
+          <Theme radius="large">
+            <NavBar />
 
-          <main className="p-4">
-            <Container>{children}</Container>
-          </main>
-          {/* <ThemePanel /> to customize the theme */}
-        </Theme>
+            <main className="p-4">
+              <Container>{children}</Container>
+            </main>
+            {/* <ThemePanel /> to customize the theme */}
+          </Theme>
+        </AuthProvider>
       </body>
     </html>
   );
