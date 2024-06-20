@@ -16,12 +16,14 @@ datasource db {
 //defining models
 
 model Issue {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  title       String
-  description String
-  status      Status   @default(OPEN)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  title            String
+  description      String
+  status           Status   @default(OPEN)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  assignedToUserId String?  @db.ObjectId
+  assignedtoUser   User?    @relation(fields: [assignedToUserId], references: [id])
 }
 
 enum Status {
@@ -43,6 +45,8 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  assignedIssues Issue[]
 }
 
 model Account {
