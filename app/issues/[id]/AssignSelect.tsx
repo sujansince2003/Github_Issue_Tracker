@@ -1,18 +1,32 @@
 "use client";
 import { User } from "@prisma/client";
 import { Select } from "@radix-ui/themes";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import Skeleton from "@/app/components/Skeleton";
 
 const AssignSelect = () => {
-  const [users, setUsers] = useState<User[]>();
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const { data } = await axios.get("/api/users");
-      setUsers(data);
-    };
-    fetchUsers();
-  }, []);
+  const {
+    data: users,
+    error,
+    isLoading,
+  } = useQuery<User[]>({
+    queryKey: ["users"],
+    queryFn: () => axios.get("/api/users").then((res) => res.data),
+    staleTime: 60 * 1000, //react query will cache or use this users data for 60 seconds and then only refetch
+    retry: 5, //this is to tell how many time react query need to retry if data is not available
+  });
+  if (isLoading) return <Skeleton />;
+  if (error) return null;
+  //   const [users, setUsers] = useState<User[]>();
+  //   useEffect(() => {
+  //     const fetchUsers = async () => {
+  //       const { data } = await axios.get("/api/users");
+  //       setUsers(data);
+  //     };
+  //     fetchUsers();
+  //   }, []);  old code without react query
 
   return (
     <>
