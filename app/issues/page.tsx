@@ -14,16 +14,6 @@ interface Issue {
 }
 
 const Issue = async () => {
-  // const [issues, setIssues] = useState<Issue[]>([]);
-
-  // useEffect(() => {
-  //   const fetchIssues = async () => {
-  //     const fetchedIssues = await prisma.issue.findMany();
-  //     setIssues(fetchedIssues);
-  //   };
-
-  //   fetchIssues();
-  // }, []);
   const issues = await prisma.issue.findMany();
 
   return (
