@@ -15,6 +15,9 @@ export async function GET() {
     return NextResponse.json(newIssue, { status: 200 })
 }
 export async function POST(request: NextRequest) {
+    const session = getServerSession(authOptions)
+    if (!session)
+        return NextResponse.json({ error: "need authorization" }, { status: 401 })
     const body = await request.json();
 
     const validation = Issueschema.safeParse(body);
