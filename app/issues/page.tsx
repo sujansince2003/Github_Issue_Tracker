@@ -1,8 +1,9 @@
-import prisma from "@/prisma/PrismaClient";
+"use client";
 import { Table } from "@radix-ui/themes";
 import { IssueStatusBadge, Link } from "../components";
-
+import { useQuery } from "@tanstack/react-query";
 import IssuesActions from "./IssuesActions";
+import axios from "axios";
 
 interface Issue {
   id: string;
@@ -13,9 +14,19 @@ interface Issue {
   updatedAt: Date;
 }
 
-const Issue = async () => {
-  const issues = await prisma.issue.findMany();
-
+const Issue = () => {
+  const { data: issues, error } = useQuery<Issue[]>({
+    queryKey: ["issues"],
+    queryFn: async () => {
+      const response = await axios.get("/api/issues");
+      return response.data;
+    },
+    retry: 2,
+  });
+  if (error) {
+    console.error(error); // Log error for debugging
+    return <div>Error loading issues. Please try again later.</div>;
+  }
   return (
     <div>
       <IssuesActions />
@@ -33,7 +44,7 @@ const Issue = async () => {
         </Table.Header>
 
         <Table.Body>
-          {issues.map((issue) => (
+          {issues?.map((issue: Issue) => (
             <Table.Row key={issue.id}>
               <Table.Cell>
                 <Link href={`/issues/${issue.id}`}>{issue.title}</Link>
@@ -49,7 +60,8 @@ const Issue = async () => {
                 <IssueStatusBadge status={issue.status} />
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
-                {issue.createdAt.toDateString()}
+                {new Date(issue.createdAt).toDateString()}
+                {/* Since createdAt is defined as a Date object in the Issue interface, but when data is fetched from an API, it often comes as a string. Thus, you need to convert the string to a Date object before calling toDateString(). */}
               </Table.Cell>
             </Table.Row>
           ))}
