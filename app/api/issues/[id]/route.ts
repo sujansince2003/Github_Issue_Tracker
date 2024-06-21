@@ -15,12 +15,9 @@ export async function PATCH(request: NextRequest,
     if (!validation.success)
         return NextResponse.json(validation.error.errors, { status: 400 })
     //check either the provide assign id is valid or not with the existing users id
-    const { assignedToUserId, title, description } = body
+    const { assignedToUserId } = body
     if (assignedToUserId) {
-        if (assignedToUserId.length != 12) {
 
-            return NextResponse.json({ error: "Malformed ObjectID: provided hex string representation must be exactly 12 bytes" }, { status: 400 })
-        }
         const user = await prisma.user.findUnique(
             {
                 where:
