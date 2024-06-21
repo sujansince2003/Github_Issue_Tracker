@@ -1,6 +1,7 @@
 import authOptions from "@/app/auth/AuthOptions";
-import { Issueschema } from "@/app/zodvalidationSchemas";
+import { PatchIssueschema } from "@/app/zodvalidationSchemas";
 import prisma from "@/prisma/PrismaClient";
+import { error } from "console";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -10,10 +11,28 @@ export async function PATCH(request: NextRequest,
     if (!session)
         return NextResponse.json({ error: "need authorization" }, { status: 401 })
     const body = await request.json()
-    const validation = Issueschema.safeParse(body)
+    const validation = PatchIssueschema.safeParse(body)
     if (!validation.success)
         return NextResponse.json(validation.error.errors, { status: 400 })
+    //check either the provide assign id is valid or not with the existing users id
+    const { assignedToUserId, title, description } = body
+    if (assignedToUserId) {
+        if (assignedToUserId.length != 12) {
 
+            return NextResponse.json({ error: "Malformed ObjectID: provided hex string representation must be exactly 12 bytes" }, { status: 400 })
+        }
+        const user = await prisma.user.findUnique(
+            {
+                where:
+                {
+                    id: assignedToUserId
+                }
+            }
+        )
+
+        if (!user)
+            return NextResponse.json({ error: "Invalid user" }, { status: 400 })
+    }
 
     const issue = await prisma.issue.findUnique(
         {
@@ -31,7 +50,8 @@ export async function PATCH(request: NextRequest,
         data:
         {
             title: body?.title,
-            description: body?.description
+            description: body?.description,
+            assignedToUserId: body?.assignedToUserId
         }
     })
 
