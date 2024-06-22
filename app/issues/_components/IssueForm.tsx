@@ -11,7 +11,6 @@ import { ErrorMessage, Spinnner } from "@/app/components";
 import axios from "axios";
 import { Issue } from "@prisma/client";
 import SimpleMDE from "react-simplemde-editor";
-import toast, { Toaster } from "react-hot-toast";
 
 // interface IssueForm {
 //   title: string;
@@ -53,7 +52,6 @@ const IssueForm = ({ issuedataToEdit }: Props) => {
               await axios.patch("/api/issues/" + issuedataToEdit.id, data);
             } else {
               await axios.post("/api/issues", data);
-              toast.success("Successfully created");
             }
             router.push("/issues");
 
@@ -93,7 +91,6 @@ const IssueForm = ({ issuedataToEdit }: Props) => {
           {isSubmitting && <Spinnner />}
         </Button>
       </form>
-      <Toaster />
     </div>
   );
 };
