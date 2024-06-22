@@ -5,7 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 import Skeleton from "@/app/components/Skeleton";
-
+import toast, { Toaster } from "react-hot-toast";
+import { useState } from "react";
 const AssignSelect = ({ issueInfo }: { issueInfo: Issue }) => {
   const {
     data: users,
@@ -33,9 +34,24 @@ const AssignSelect = ({ issueInfo }: { issueInfo: Issue }) => {
       <Select.Root
         defaultValue={issueInfo.assignedToUserId || ""}
         onValueChange={(userId) => {
-          axios.patch("/api/issues/" + issueInfo.id, {
-            assignedToUserId: userId !== "unassigned" ? userId : null,
-          });
+          const assignedUser = users?.find((u) => u.id === userId);
+
+          axios
+            .patch("/api/issues/" + issueInfo.id, {
+              assignedToUserId: userId !== "unassigned" ? userId : null,
+            })
+            .then(() => {
+              toast.success(
+                `${
+                  userId !== "unassigned"
+                    ? ` Successfully assigned to ${assignedUser?.name}`
+                    : "Assigned to none"
+                } `
+              );
+            })
+            .catch(() => {
+              toast.error("something went wrong when assigning Issue!!!!");
+            });
         }}
       >
         <Select.Trigger placeholder="Assign Issue" />
@@ -51,6 +67,7 @@ const AssignSelect = ({ issueInfo }: { issueInfo: Issue }) => {
           </Select.Group>
         </Select.Content>
       </Select.Root>
+      <Toaster />
     </>
   );
 };
