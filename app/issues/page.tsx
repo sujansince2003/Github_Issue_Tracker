@@ -4,6 +4,8 @@ import { IssueStatusBadge, Link } from "../components";
 import { useQuery } from "@tanstack/react-query";
 import IssuesActions from "./IssuesActions";
 import axios from "axios";
+import { Status } from "@prisma/client";
+import { useEffect } from "react";
 
 interface Issue {
   id: string;
@@ -14,19 +16,28 @@ interface Issue {
   updatedAt: Date;
 }
 
-const Issue = () => {
-  const { data: issues, error } = useQuery<Issue[]>({
+const Issue = ({ searchParams }: { searchParams: { status: Status } }) => {
+  const statusQuery = searchParams.status;
+  const {
+    data: issues,
+    error,
+    refetch,
+  } = useQuery<Issue[]>({
     queryKey: ["issues"],
     queryFn: async () => {
-      const response = await axios.get("/api/issues");
+      const response = await axios.get(
+        `/api/issues${statusQuery ? `?status=${statusQuery}` : ""}`
+      );
       return response.data;
     },
-    retry: 2,
   });
   if (error) {
     console.error(error); // Log error for debugging
     return <div>Error loading issues. Please try again later.</div>;
   }
+  useEffect(() => {
+    refetch();
+  }, [statusQuery]);
   return (
     <div>
       <IssuesActions />
