@@ -1,11 +1,13 @@
 "use client";
 import { Table } from "@radix-ui/themes";
 import { IssueStatusBadge, Link } from "../components";
+import NextLink from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import IssuesActions from "./IssuesActions";
 import axios from "axios";
 import { Status } from "@prisma/client";
 import { useEffect } from "react";
+import { ArrowUpIcon } from "@radix-ui/react-icons";
 
 interface Issue {
   id: string;
@@ -16,8 +18,13 @@ interface Issue {
   updatedAt: Date;
 }
 
-const Issue = ({ searchParams }: { searchParams: { status: Status } }) => {
+const Issue = ({
+  searchParams,
+}: {
+  searchParams: { status: Status; orderBy: keyof Issue };
+}) => {
   const statusQuery = searchParams.status;
+
   const {
     data: issues,
     error,
@@ -31,6 +38,20 @@ const Issue = ({ searchParams }: { searchParams: { status: Status } }) => {
       return response.data;
     },
   });
+
+  const columns: {
+    label: string;
+    value: keyof Issue;
+    className?: string;
+  }[] = [
+    { label: "Issue", value: "title" },
+    { label: "Status", value: "status", className: "hidden md:table-cell" },
+    {
+      label: "createdAt",
+      value: "createdAt",
+      className: "hidden md:table-cell",
+    },
+  ];
   if (error) {
     console.error(error); // Log error for debugging
     return <div>Error loading issues. Please try again later.</div>;
@@ -44,13 +65,31 @@ const Issue = ({ searchParams }: { searchParams: { status: Status } }) => {
       <Table.Root variant="surface">
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeaderCell>Issues</Table.ColumnHeaderCell>
+            {columns?.map((column) => (
+              <Table.ColumnHeaderCell
+                key={column.value}
+                className={column.className}
+              >
+                <NextLink
+                  href={{
+                    query: { ...searchParams, orderBy: column.value },
+                  }}
+                >
+                  {column.label}
+                </NextLink>
+                {column.value === searchParams.orderBy && (
+                  <ArrowUpIcon className="inline" />
+                )}
+              </Table.ColumnHeaderCell>
+            ))}
+
+            {/* <Table.ColumnHeaderCell>Issues</Table.ColumnHeaderCell>
             <Table.ColumnHeaderCell className="hidden md:table-cell">
               Status
             </Table.ColumnHeaderCell>
             <Table.ColumnHeaderCell className="hidden md:table-cell">
               Created
-            </Table.ColumnHeaderCell>
+            </Table.ColumnHeaderCell> */}
           </Table.Row>
         </Table.Header>
 
