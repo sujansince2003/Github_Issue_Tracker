@@ -21,23 +21,12 @@ interface Issue {
 const Issue = ({
   searchParams,
 }: {
-  searchParams: { status: Status; orderBy: keyof Issue };
+  searchParams: {
+    status: Status;
+    orderBy: keyof Issue;
+    sortBy: "desc" | "asc";
+  };
 }) => {
-  const {
-    data: issues,
-    error,
-    refetch,
-  } = useQuery<Issue[]>({
-    queryKey: ["issues"],
-    queryFn: async () => {
-      const response = await axios.get(
-        `/api/issues${statusQuery ? `?status=${statusQuery}` : ""}${
-          orderBy ? `&orderBy=${orderBy}` : ""
-        }`
-      );
-      return response.data;
-    },
-  });
   const columns: {
     label: string;
     value: keyof Issue;
@@ -51,14 +40,29 @@ const Issue = ({
       className: "hidden md:table-cell",
     },
   ];
+
   const statusQuery = searchParams.status;
+  const sortBy = searchParams.sortBy;
   const orderBy = columns
     ?.map((col) => col.value)
     .includes(searchParams.orderBy)
     ? searchParams.orderBy
     : undefined;
-
-  // searchParams.orderBy;
+  const {
+    data: issues,
+    error,
+    refetch,
+  } = useQuery<Issue[]>({
+    queryKey: ["issues"],
+    queryFn: async () => {
+      const response = await axios.get(
+        `/api/issues${statusQuery ? `?status=${statusQuery}` : ""}${
+          orderBy ? `&orderBy=${orderBy}` : ""
+        }${sortBy ? `&sortBy=${sortBy}` : ""}`
+      );
+      return response.data;
+    },
+  });
 
   if (error) {
     console.error(error); // Log error for debugging
@@ -66,7 +70,7 @@ const Issue = ({
   }
   useEffect(() => {
     refetch();
-  }, [statusQuery, orderBy]);
+  }, [statusQuery, orderBy, sortBy]);
   return (
     <div>
       <IssuesActions />
@@ -80,13 +84,19 @@ const Issue = ({
               >
                 <NextLink
                   href={{
-                    query: { ...searchParams, orderBy: column.value },
+                    query: {
+                      ...searchParams,
+                      orderBy: column.value,
+                      sortBy: sortBy === "asc" ? "desc" : "asc",
+                    },
                   }}
                 >
                   {column.label}
                 </NextLink>
                 {column.value === searchParams.orderBy && (
-                  <ArrowUpIcon className="inline" />
+                  <ArrowUpIcon
+                    className={`inline ${sortBy === "asc" ? "" : "rotate-180"}`}
+                  />
                 )}
               </Table.ColumnHeaderCell>
             ))}
