@@ -23,8 +23,6 @@ const Issue = ({
 }: {
   searchParams: { status: Status; orderBy: keyof Issue };
 }) => {
-  const statusQuery = searchParams.status;
-
   const {
     data: issues,
     error,
@@ -33,12 +31,13 @@ const Issue = ({
     queryKey: ["issues"],
     queryFn: async () => {
       const response = await axios.get(
-        `/api/issues${statusQuery ? `?status=${statusQuery}` : ""}`
+        `/api/issues${statusQuery ? `?status=${statusQuery}` : ""}${
+          orderBy ? `&orderBy=${orderBy}` : ""
+        }`
       );
       return response.data;
     },
   });
-
   const columns: {
     label: string;
     value: keyof Issue;
@@ -52,13 +51,22 @@ const Issue = ({
       className: "hidden md:table-cell",
     },
   ];
+  const statusQuery = searchParams.status;
+  const orderBy = columns
+    ?.map((col) => col.value)
+    .includes(searchParams.orderBy)
+    ? searchParams.orderBy
+    : undefined;
+
+  // searchParams.orderBy;
+
   if (error) {
     console.error(error); // Log error for debugging
     return <div>Error loading issues. Please try again later.</div>;
   }
   useEffect(() => {
     refetch();
-  }, [statusQuery]);
+  }, [statusQuery, orderBy]);
   return (
     <div>
       <IssuesActions />
