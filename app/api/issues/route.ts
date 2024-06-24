@@ -17,6 +17,8 @@ export async function GET(request: NextRequest) {
     const url = new URL(request.url);
     const filterQuery = url.searchParams.get("status")
     const orderByQuery = url.searchParams.get("orderBy")
+    const sortBy = url.searchParams.get("sortBy")
+
 
 
     // defining a function to check if a given filterQuery params is valid Status value defined in schema
@@ -26,6 +28,12 @@ export async function GET(request: NextRequest) {
 
     const whereClause = isValidStatus(filterQuery) ? { status: filterQuery } : {}
 
+    //valdiating sortBy asc or desc
+    const isValidSortBy = (sortBy: string | null) => {
+        return sortBy === "desc" || sortBy === "asc"
+    }
+
+    const sortByclause = isValidSortBy(sortBy) ? sortBy : undefined
     // validating orderBy
     const isValidOrderBy = (key: string | null): key is keyof Issue => {
         const issueKeys: Array<keyof Issue> = [
@@ -39,7 +47,10 @@ export async function GET(request: NextRequest) {
         return key !== null && issueKeys.includes(key as keyof Issue);
     };
 
-    const orderByClause = isValidOrderBy(orderByQuery) ? { [orderByQuery]: "desc" } : {}
+    const orderByClause = isValidOrderBy(orderByQuery) ? { [orderByQuery]: sortByclause } : {}
+
+
+
 
     const newIssue = await prisma.issue.findMany(
         {
