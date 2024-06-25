@@ -41,7 +41,7 @@ const Issue = ({
     },
   ];
 
-  const statusQuery = searchParams.status;
+  const statusQuery = searchParams.status ?? "All";
   const sortBy = searchParams.sortBy;
   const orderBy = columns
     ?.map((col) => col.value)
