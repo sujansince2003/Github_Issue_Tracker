@@ -8,6 +8,7 @@ import axios from "axios";
 import { Status } from "@prisma/client";
 import { useEffect } from "react";
 import { ArrowUpIcon } from "@radix-ui/react-icons";
+import Pagination from "../components/Pagination";
 
 interface Issue {
   id: string;
@@ -25,6 +26,7 @@ const Issue = ({
     status: Status;
     orderBy: keyof Issue;
     sortBy: "desc" | "asc";
+    page: string; //page represent pagenumber which should be number but we are using string because we are getting from URL.we will manually convert it to number
   };
 }) => {
   const columns: {
@@ -48,21 +50,25 @@ const Issue = ({
     .includes(searchParams.orderBy)
     ? searchParams.orderBy
     : undefined;
-  const {
-    data: issues,
-    error,
-    refetch,
-  } = useQuery<Issue[]>({
+
+  const page = parseInt(searchParams?.page) || 1;
+  const pageSize = 10; //todo:::: implement feature of dropdown to select by user
+
+  const { data, error, refetch } = useQuery({
     queryKey: ["issues"],
     queryFn: async () => {
       const response = await axios.get(
         `/api/issues${statusQuery ? `?status=${statusQuery}` : ""}${
           orderBy ? `&orderBy=${orderBy}` : ""
-        }${sortBy ? `&sortBy=${sortBy}` : ""}`
+        }${sortBy ? `&sortBy=${sortBy}` : ""}${page ? `&page=${page}` : ""}${
+          pageSize ? `&pageSize=${pageSize}` : ""
+        }`
       );
       return response.data;
     },
   });
+
+  const itemCount = data?.totalIssuesCount;
 
   if (error) {
     console.error(error); // Log error for debugging
@@ -70,7 +76,7 @@ const Issue = ({
   }
   useEffect(() => {
     refetch();
-  }, [statusQuery, orderBy, sortBy]);
+  }, [statusQuery, orderBy, sortBy, page, pageSize]);
   return (
     <div>
       <IssuesActions />
@@ -112,7 +118,7 @@ const Issue = ({
         </Table.Header>
 
         <Table.Body>
-          {issues?.map((issue: Issue) => (
+          {data?.Issues?.map((issue: Issue) => (
             <Table.Row key={issue.id}>
               <Table.Cell>
                 <Link href={`/issues/${issue.id}`}>{issue.title}</Link>
@@ -135,6 +141,11 @@ const Issue = ({
           ))}
         </Table.Body>
       </Table.Root>
+      <Pagination
+        pageSize={pageSize}
+        itemCount={itemCount}
+        currentPage={page}
+      />
     </div>
   );
 };
