@@ -18,6 +18,8 @@ export async function GET(request: NextRequest) {
     const filterQuery = url.searchParams.get("status")
     const orderByQuery = url.searchParams.get("orderBy")
     const sortBy = url.searchParams.get("sortBy")
+    const page = url.searchParams.get("page")
+    const pageSize = url.searchParams.get("pageSize")
 
 
 
@@ -50,12 +52,26 @@ export async function GET(request: NextRequest) {
     const orderByClause = isValidOrderBy(orderByQuery) ? { [orderByQuery]: sortByclause } : {}
 
 
+    // validating pagenumber and pagesize
+
+    const pageNum = page ? parseInt(page, 10) : 1
+    const currentpageSize = pageSize ? parseInt(pageSize, 10) : 10
+
+    if (isNaN(pageNum) || isNaN(currentpageSize)) {
+        return NextResponse.json({ error: "Invalid page or pageSize value" }, { status: 400 });
+    }
 
 
-    const newIssue = await prisma.issue.findMany(
+
+    const totalIssuesCount = await prisma.issue.count({
+        where: whereClause
+    })
+    const Issues = await prisma.issue.findMany(
         {
             where: whereClause,
-            orderBy: orderByClause
+            orderBy: orderByClause,
+            skip: (pageNum - 1) * 10,
+            take: currentpageSize
         }
     )
 
@@ -67,7 +83,7 @@ export async function GET(request: NextRequest) {
 
 
     // return NextResponse.json({ newIssue, orderByClause, whereClause }, { status: 200 })
-    return NextResponse.json(newIssue, { status: 200 })
+    return NextResponse.json({ Issues, totalIssuesCount }, { status: 200 })
 }
 export async function POST(request: NextRequest) {
     const session = getServerSession(authOptions)
