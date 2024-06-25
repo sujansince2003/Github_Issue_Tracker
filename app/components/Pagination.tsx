@@ -30,7 +30,7 @@ const Pagination = ({ itemCount, pageSize, currentPage }: props) => {
 
   if (pageCount <= 1) return null;
   return (
-    <Flex align="center" gap="3">
+    <Flex align="center" gap="3" justify={"center"} mt={"4"}>
       <Button
         color="gray"
         variant="soft"
