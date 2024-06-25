@@ -17,7 +17,7 @@ const StatusFilter = () => {
 
   return (
     <Select.Root
-      defaultValue={searchparams.get("status")!}
+      defaultValue={searchparams.get("status")! || "All"}
       onValueChange={(status) => {
         const params = new URLSearchParams();
         if (status) {
