@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Pagination from "./components/Pagination";
+import LatestIssues from "./LatestIssues";
 
 export default function Home({
   searchParams,
@@ -8,12 +9,12 @@ export default function Home({
 }) {
   return (
     <>
-      <div>hello</div>
-      <Pagination
+      <LatestIssues />
+      {/* <Pagination
         itemCount={50}
         pageSize={5}
         currentPage={parseInt(searchParams.page)}
-      />
+      /> */}
     </>
   );
 }
