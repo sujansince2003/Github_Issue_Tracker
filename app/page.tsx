@@ -4,6 +4,7 @@ import LatestIssues from "./LatestIssues";
 import IssueSummary from "./IssueSummary";
 import prisma from "@/prisma/PrismaClient";
 import IssueCharts from "./IssueCharts";
+import { Flex, Grid } from "@radix-ui/themes";
 
 export default async function Home({
   searchParams,
@@ -18,23 +19,21 @@ export default async function Home({
 
   return (
     <>
-      <LatestIssues />
-      {/* <Pagination
-        itemCount={50}
-        pageSize={5}
-        currentPage={parseInt(searchParams.page)}
-      /> */}
-
-      <IssueSummary
-        openNum={openNum}
-        closedNum={closedNum}
-        inProgressNum={inProgressNum}
-      />
-      <IssueCharts
-        openNum={openNum}
-        closedNum={closedNum}
-        inProgressNum={inProgressNum}
-      />
+      <Grid columns={{ initial: "1", md: "2" }} gap={"5"}>
+        <Flex direction={"column"} gap={"5"}>
+          <IssueSummary
+            openNum={openNum}
+            closedNum={closedNum}
+            inProgressNum={inProgressNum}
+          />
+          <IssueCharts
+            openNum={openNum}
+            closedNum={closedNum}
+            inProgressNum={inProgressNum}
+          />
+        </Flex>
+        <LatestIssues />
+      </Grid>
     </>
   );
 }
