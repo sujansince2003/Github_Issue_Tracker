@@ -3,6 +3,7 @@ import Pagination from "./components/Pagination";
 import LatestIssues from "./LatestIssues";
 import IssueSummary from "./IssueSummary";
 import prisma from "@/prisma/PrismaClient";
+import IssueCharts from "./IssueCharts";
 
 export default async function Home({
   searchParams,
@@ -25,6 +26,11 @@ export default async function Home({
       /> */}
 
       <IssueSummary
+        openNum={openNum}
+        closedNum={closedNum}
+        inProgressNum={inProgressNum}
+      />
+      <IssueCharts
         openNum={openNum}
         closedNum={closedNum}
         inProgressNum={inProgressNum}
