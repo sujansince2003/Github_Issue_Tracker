@@ -1,6 +1,4 @@
 "use client";
-import { Table } from "@radix-ui/themes";
-import { IssueStatusBadge, Link } from "../components";
 
 import { useQuery } from "@tanstack/react-query";
 import IssuesActions from "./IssuesActions";
@@ -10,6 +8,7 @@ import { useEffect } from "react";
 import { ArrowUpIcon } from "@radix-ui/react-icons";
 import Pagination from "../components/Pagination";
 import IssueTable from "./_components/IssueTable";
+import { Metadata } from "next";
 
 interface Issue {
   id: string;
