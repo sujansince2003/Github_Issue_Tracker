@@ -70,13 +70,13 @@ const Issue = ({
 
   const itemCount = data?.totalIssuesCount;
 
+  useEffect(() => {
+    refetch();
+  }, [statusQuery, orderBy, sortBy, page, pageSize, refetch]);
   if (error) {
     console.error(error); // Log error for debugging
     return <div>Error loading issues. Please try again later.</div>;
   }
-  useEffect(() => {
-    refetch();
-  }, [statusQuery, orderBy, sortBy, page, pageSize]);
   return (
     <div>
       <IssuesActions />
