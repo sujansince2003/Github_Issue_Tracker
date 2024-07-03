@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import IssuesActions from "./IssuesActions";
 import axios from "axios";
 import { Status } from "@prisma/client";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { ArrowUpIcon } from "@radix-ui/react-icons";
 import Pagination from "../components/Pagination";
 import IssueTable from "./_components/IssueTable";
@@ -79,17 +79,19 @@ const Issue = ({
   }
   return (
     <div>
-      <IssuesActions />
-      <IssueTable
-        Issues={data?.Issues}
-        columns={columns}
-        searchParams={searchParams}
-      />
-      <Pagination
-        pageSize={pageSize}
-        itemCount={itemCount}
-        currentPage={page}
-      />
+      <Suspense fallback={<div>Loading...</div>}>
+        <IssuesActions />
+        <IssueTable
+          Issues={data?.Issues}
+          columns={columns}
+          searchParams={searchParams}
+        />
+        <Pagination
+          pageSize={pageSize}
+          itemCount={itemCount}
+          currentPage={page}
+        />
+      </Suspense>
     </div>
   );
 };
